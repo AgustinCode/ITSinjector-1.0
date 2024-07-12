@@ -10,67 +10,83 @@
 
 using namespace std;
 
-void error(const char* error_title, const char* error_message);
+// ItsInjectorV1.cpp
+#include <windows.h>
+#include <libloaderapi.h>
+#include <iostream>
+#include <thread>
+#include <string>
+#include <sys/stat.h>
+#include <winternl.h>
 
-void get_process_id(const char* window_title, DWORD& proc_id)
-{
-    // Find the window handle by its title
-    HWND hwnd = FindWindowA(NULL, window_title);
-    if (hwnd == NULL) {
-        // If window is not found, display an error message
-        error("Error", "Window not found");
-    }
-    // Get the process ID associated with the window handle
-    GetWindowThreadProcessId(hwnd, &proc_id);
-}
+class Injector {
 
-void error(const char* error_title, const char* error_message)
-{
-    // Display an error message box and exit the program with an error code
-    MessageBoxA(NULL, error_message, error_title, MB_ICONERROR);
-    exit(-1);
-}
 
-bool file_exists(const string& file_name)
-{
-    struct stat buffer;
-    // Check if the file exists using stat function
-    return (stat(file_name.c_str(), &buffer) == 0);
-}
 
-int main()
-{
-    cout << "Hello World!\n";
 
-    // Test getting the process ID of a window
-    DWORD proc_id = 0;
-    const char* window_title = "test.txt: Bloc de notas"; // Change this to the title of an existing window on your system
+private:
+    DWORD proc_id;
+    std::string window_title;
+    std::string dll_path;
 
-    get_process_id(window_title, proc_id);
-    if (proc_id != 0)
-    {
-        // If process ID is found, print it
-        cout << "Process ID of '" << window_title << "': " << proc_id << endl;
-    }
-    else
-    {
-        // If window is not found, print an error message
-        cout << "Could not find window with title: " << window_title << endl;
+    void error(const char* error_title, const char* error_message) {
+        MessageBoxA(NULL, error_message, error_title, MB_ICONERROR);
+        exit(-1);
     }
 
-    // Test if a file exists
-    string file_name = "test.txt";
-    if (file_exists(file_name))
-    {
-        // If file exists, print a message
-        cout << "File '" << file_name << "' exists." << endl;
+    bool file_exists(const std::string& file_name) {
+        struct stat buffer;
+        return (stat(file_name.c_str(), &buffer) == 0);
     }
-    else
-    {
-        // If file does not exist, print an error message
-        cout << "File '" << file_name << "' does not exist." << endl;
-        error("File Error", "File does not exist");
+
+
+public:
+    Injector(const std::string& window_title, const std::string& dll_path)
+        : window_title(window_title), dll_path(dll_path), proc_id(0) {}
+
+    void get_process_id() {
+        HWND hwnd = FindWindowA(NULL, window_title.c_str());
+        if (hwnd == NULL) {
+            error("Error", "Window not found");
+        }
+        GetWindowThreadProcessId(hwnd, &proc_id);
     }
+
+    bool check_dll_exists() {
+        if (!file_exists(dll_path)) {
+            error("File Error", "DLL file does not exist");
+            return false;
+        }
+        return true;
+    }
+
+    void inject() {
+        // Aquí implementaremos la lógica de inyección de DLL
+        // Por ahora, solo imprimimos información
+        std::cout << "Injecting DLL: " << dll_path << " into process ID: " << proc_id << std::endl;
+        // TODO: Implementar la inyección real de la DLL
+    }
+
+    void run() {
+        get_process_id();
+        if (proc_id != 0) {
+            std::cout << "Process ID of '" << window_title << "': " << proc_id << std::endl;
+            if (check_dll_exists()) {
+                inject();
+            }
+        }
+        else {
+            std::cout << "Could not find window with title: " << window_title << std::endl;
+        }
+    }
+};
+
+int main() {
+    std::string window_title = "test: Bloc de notas";
+    std::string dll_path = "test.txt";
+
+    Injector injector(window_title, dll_path);
+    injector.run();
 
     return 0;
 }
