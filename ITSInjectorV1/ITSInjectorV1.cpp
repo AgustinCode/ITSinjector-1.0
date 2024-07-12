@@ -7,24 +7,14 @@
 #include <sys/stat.h>
 #include <winternl.h>
 
+
 class Injector {
 
-
-
-<<<<<<< HEAD
-
 private:
+
     DWORD proc_id;
     std::string window_title;
     std::string dll_path;
-=======
-int main()
-{
-
-    // Test getting the process ID of a window
-    DWORD proc_id = 0;
-    const char* window_title = "test.txt: Bloc de notas"; // This will be changed to a function ask_for_window()
->>>>>>> 3363b2a97440a9c75f65acbc4a8de61e3d2d7c15
 
     void error(const char* error_title, const char* error_message) {
         MessageBoxA(NULL, error_message, error_title, MB_ICONERROR);
@@ -38,6 +28,7 @@ int main()
 
 
 public:
+
     Injector(const std::string& window_title, const std::string& dll_path)
         : window_title(window_title), dll_path(dll_path), proc_id(0) {}
 
