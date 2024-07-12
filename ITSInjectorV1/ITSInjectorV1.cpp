@@ -1,15 +1,3 @@
-// ItsInjectorV1.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-#include <windows.h>
-#include <libloaderapi.h>
-#include <iostream>
-#include <thread>
-#include <string>
-#include <sys/stat.h>
-#include <winternl.h>
-
-using namespace std;
-
 // ItsInjectorV1.cpp
 #include <windows.h>
 #include <libloaderapi.h>
@@ -70,10 +58,10 @@ public:
     }
 
     void inject() {
-        // Aquí implementaremos la lógica de inyección de DLL
-        // Por ahora, solo imprimimos información
+        // AquÃ­ implementaremos la lÃ³gica de inyecciÃ³n de DLL
+        // Por ahora, solo imprimimos informaciÃ³n
         std::cout << "Injecting DLL: " << dll_path << " into process ID: " << proc_id << std::endl;
-        // TODO: Implementar la inyección real de la DLL
+        // TODO: Implementar la inyecciÃ³n real de la DLL
     }
 
     void run() {
