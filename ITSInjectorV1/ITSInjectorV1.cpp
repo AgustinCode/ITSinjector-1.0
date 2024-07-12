@@ -40,11 +40,10 @@ bool file_exists(const string& file_name)
 
 int main()
 {
-    cout << "Hello World!\n";
 
     // Test getting the process ID of a window
     DWORD proc_id = 0;
-    const char* window_title = "test.txt: Bloc de notas"; // Change this to the title of an existing window on your system
+    const char* window_title = "test.txt: Bloc de notas"; // This will be changed to a function ask_for_window()
 
     get_process_id(window_title, proc_id);
     if (proc_id != 0)
