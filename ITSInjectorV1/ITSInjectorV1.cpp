@@ -49,6 +49,7 @@ public:
     }
 
     void inject() {
+<<<<<<< HEAD
         std::cout << "Injecting DLL: " << dll_path << " into process ID: " << proc_id << std::endl;
         HANDLE h_process = OpenProcess(PROCESS_ALL_ACCESS, NULL, proc_id);
         if (!h_process)
@@ -79,6 +80,12 @@ public:
         MessageBoxA(0, "Succesfully injected!", "Success", 0);
 
 
+=======
+        // Aquí implementaremos la lógica de inyección de DLL
+        // Por ahora, solo imprimimos información
+        std::cout << "Injecting DLL: " << dll_path << " into process ID: " << proc_id << std::endl;
+        // TODO: Implementar la inyección real de la DLL
+>>>>>>> origin/master
     }
 
     void run() {
