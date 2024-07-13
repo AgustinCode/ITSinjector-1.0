@@ -1,15 +1,3 @@
-// ItsInjectorV1.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-#include <windows.h>
-#include <libloaderapi.h>
-#include <iostream>
-#include <thread>
-#include <string>
-#include <sys/stat.h>
-#include <winternl.h>
-
-using namespace std;
-
 // ItsInjectorV1.cpp
 #include <windows.h>
 #include <libloaderapi.h>
@@ -19,24 +7,14 @@ using namespace std;
 #include <sys/stat.h>
 #include <winternl.h>
 
+
 class Injector {
 
-
-
-<<<<<<< HEAD
-
 private:
+
     DWORD proc_id;
     std::string window_title;
     std::string dll_path;
-=======
-int main()
-{
-
-    // Test getting the process ID of a window
-    DWORD proc_id = 0;
-    const char* window_title = "test.txt: Bloc de notas"; // This will be changed to a function ask_for_window()
->>>>>>> 3363b2a97440a9c75f65acbc4a8de61e3d2d7c15
 
     void error(const char* error_title, const char* error_message) {
         MessageBoxA(NULL, error_message, error_title, MB_ICONERROR);
@@ -50,6 +28,7 @@ int main()
 
 
 public:
+
     Injector(const std::string& window_title, const std::string& dll_path)
         : window_title(window_title), dll_path(dll_path), proc_id(0) {}
 
@@ -70,10 +49,36 @@ public:
     }
 
     void inject() {
-        // Aquí implementaremos la lógica de inyección de DLL
-        // Por ahora, solo imprimimos información
         std::cout << "Injecting DLL: " << dll_path << " into process ID: " << proc_id << std::endl;
-        // TODO: Implementar la inyección real de la DLL
+        HANDLE h_process = OpenProcess(PROCESS_ALL_ACCESS, NULL, proc_id);
+        if (!h_process)
+        {
+            error("OpenProcess", ("Error to open a handle to the process"));
+        }
+
+        void* allocated_memory = VirtualAllocEx(h_process, nullptr, MAX_PATH, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+
+        if (!allocated_memory)
+        {
+            error("VirtualAllocEx", "Failed to allocate memory");
+        }
+
+        if (!WriteProcessMemory(h_process, nullptr, dll_path.c_str(), MAX_PATH, nullptr)) 
+        {
+            error("WriteProcessMemory", "Error writting process memory");
+        }
+
+        HANDLE h_thread = CreateRemoteThread(h_process, nullptr, NULL, LPTHREAD_START_ROUTINE(LoadLibraryA), allocated_memory, NULL, nullptr);
+        if (!h_thread)
+        {
+            error("CreateRemoteThread", "Failed to create remote thread");
+        }
+
+        CloseHandle(h_process);
+        VirtualFreeEx(h_process, allocated_memory, NULL, MEM_RELEASE);
+        MessageBoxA(0, "Succesfully injected!", "Success", 0);
+
+
     }
 
     void run() {
