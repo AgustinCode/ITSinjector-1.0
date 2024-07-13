@@ -21,6 +21,7 @@ private:
         exit(-1);
     }
 
+
     bool file_exists(const std::string& file_name) {
         struct stat buffer;
         return (stat(file_name.c_str(), &buffer) == 0);
@@ -32,6 +33,7 @@ public:
     Injector(const std::string& window_title, const std::string& dll_path)
         : window_title(window_title), dll_path(dll_path), proc_id(0) {}
 
+
     void get_process_id() {
         HWND hwnd = FindWindowA(NULL, window_title.c_str());
         if (hwnd == NULL) {
@@ -39,6 +41,7 @@ public:
         }
         GetWindowThreadProcessId(hwnd, &proc_id);
     }
+
 
     bool check_dll_exists() {
         if (!file_exists(dll_path)) {
@@ -48,8 +51,8 @@ public:
         return true;
     }
 
+
     void inject() {
-<<<<<<< HEAD
         std::cout << "Injecting DLL: " << dll_path << " into process ID: " << proc_id << std::endl;
         HANDLE h_process = OpenProcess(PROCESS_ALL_ACCESS, NULL, proc_id);
         if (!h_process)
@@ -80,13 +83,8 @@ public:
         MessageBoxA(0, "Succesfully injected!", "Success", 0);
 
 
-=======
-        // Aquí implementaremos la lógica de inyección de DLL
-        // Por ahora, solo imprimimos información
-        std::cout << "Injecting DLL: " << dll_path << " into process ID: " << proc_id << std::endl;
-        // TODO: Implementar la inyección real de la DLL
->>>>>>> origin/master
     }
+
 
     void run() {
         get_process_id();
@@ -101,6 +99,7 @@ public:
         }
     }
 };
+
 
 int main() {
     std::string window_title = "test: Bloc de notas";
